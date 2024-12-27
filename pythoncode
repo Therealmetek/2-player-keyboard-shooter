@@ -1,0 +1,77 @@
+from ursina import *
+
+app = Ursina()
+player = Entity(model="cube", color=color.blue, scale=0.5, collider="box")
+player2 = Entity(model="cube", color=color.magenta, scale=0.5, collider="box")
+fire = Entity(model="cube", color=color.blue, scale=(0.2, 0.5, 0.5), collider="box")
+fire2 = Entity(model="cube", color=color.pink, scale=(0.2, 0.5, 0.5), collider="box")
+
+run = 0
+Lastturn2 = 0
+Lastturn = 0
+
+
+def update():
+    global Lastturn, Lastturn2, run, retest
+    player.x += held_keys["d"] * 0.1
+    if held_keys["d"]:
+        Lastturn = "d"
+    player.x -= held_keys["a"] * 0.1
+    if held_keys["a"]:
+        Lastturn = 'a'
+    player.y += held_keys["w"] * 0.1
+    if held_keys["w"]:
+        Lastturn = "w"
+    player.y -= held_keys["s"] * 0.1
+    if held_keys["s"]:
+        Lastturn = "s"
+
+    # player2 turn
+    player2.x += held_keys["right arrow"] * 0.1
+    if held_keys["right arrow"]:
+        Lastturn2 = "right arrow"
+    player2.x -= held_keys["left arrow"] * 0.1
+    if held_keys["left arrow"]:
+        Lastturn2 = 'left arrow'
+    player2.y += held_keys["up arrow"] * 0.1
+    if held_keys["up arrow"]:
+        Lastturn2 = 'up arrow'
+    player2.y -= held_keys["down arrow"] * 0.1
+    if held_keys["down arrow"]:
+        Lastturn2 = 'down arrow'
+    hit_info = player2.intersects(fire)
+    hit_info2 = player.intersects(fire2)
+    run += 1
+    if run == 320:
+        run = 0
+    if run <= 200:
+        if Lastturn == "d":
+            fire.x += 0.2
+        if Lastturn == "a":
+            fire.x -= 0.2
+        if Lastturn == "w":
+            fire.y += 0.2
+        if Lastturn == "s":
+            fire.y -= 0.2
+        if hit_info.hit:
+            print("player1 wins")
+        if Lastturn2 == "right arrow":
+            fire2.x += 0.2
+        if Lastturn2 == "left arrow":
+            fire2.x -= 0.2
+        if Lastturn2 == "up arrow":
+            fire2.y += 0.2
+        if Lastturn2 == "down arrow":
+            fire2.y -= 0.2
+        if hit_info2.hit:
+            print("player2 wins")
+    else:
+        fire.position = player.position
+        fire2.position = player2.position
+
+
+player2.position = (5, 0, 0)
+player.position = (-5, 0, 0)
+fire.position = (9, 0, 0)
+fire2.position = (9, 0, 0)
+app.run()
